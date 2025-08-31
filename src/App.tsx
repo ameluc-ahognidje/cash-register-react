@@ -1,11 +1,21 @@
-import { useState } from "react";
-import { displayResult, getNewChangeInDrawer, getReminderFromChangeTable, getTableOfChangeDue, getTableOfDueCount, getTotalCountOfChange, getTotalOfTable, isIndividualCountOfChangeSufficient, makeChangeOperation, type Base, type Denomination } from "../utilitaries.ts";
+import { useState, type JSX } from "react";
+import {
+    displayResult,
+    getReminderFromTableOfChangesDues,
+    getTableOfChangesDues,
+    getTableOfMaxDenominationCountDue,
+    getTotalOfTable,
+    getTotalOfTableOfChangesDue,
+    isEachCountOfChangesEnough,
+    makeChangeOperation,
+    makeNewDrawer
+} from "../utilities/functions.ts";
+import type {  Base, Denomination } from "../utilities/types.ts";
 import Button from "./components/Button.tsx";
 import Input from "./components/Input.tsx";
 
 
 let changeUsed:Denomination[] = [];
-
 let changeInDrawer:Denomination[] = [
     [ "PENNY", 1.01 ],
     [ "NICKEL", 2.05 ],
@@ -17,14 +27,6 @@ let changeInDrawer:Denomination[] = [
     [ "TWENTY", 60 ],
     [ "ONE HUNDRED", 100 ]
 ];
-
-const statusMessages:string[] = [
-    "No change due - customer paid with exact cash",
-    "Status: INSUFFICIENT FUNDS",
-    "Status: CLOSED",
-    "Status: OPEN"
-];
-
 const baseOfDenominations:Base = {
     "PENNY": 0.01,
     "NICKEL": 0.05,
@@ -36,41 +38,80 @@ const baseOfDenominations:Base = {
     "TWENTY": 20,
     "ONE HUNDRED": 100
 };
+const statusMessages:string[] = [
+    "No change due - customer paid with exact cash",
+    "Status: INSUFFICIENT FUNDS",
+    "Status: CLOSED",
+    "Status: OPEN"
+];
 
-export default function App()
+export default function App():JSX.Element
 {
-    const [ cash, setCash ] = useState<string>("");
-    const [ price, setPrice ] = useState<string>("");
-    const [ display , setDisplay ] = useState<string>("");
+    const [cash, setCash] = useState<string>("");
+    const [display, setDisplay] = useState<string>("");
+    const [price, setPrice] = useState<string>("");
+
+    function handleDisplay(text:string):JSX.Element | string
+    {
+        if (/<br\/>/.test(text))
+        {
+            const table = text.split(/<br\/>/);
+
+            return (<>{
+                table.map((element) =>
+                {
+                    return (<p>{element}</p>);
+                })
+            }</>);
+        }
+        else
+        {
+            return text;
+        }
+    }
 
     function handlePurchase():void
     {
         const cashEntry = Number(cash);
-        const priceEntry = Number(price)
+        const priceEntry = Number(price);
         const changeDue = Number((cashEntry - priceEntry).toFixed(2));
         const totalOfChangeInDrawer = Number(getTotalOfTable(changeInDrawer).toFixed(2));
-        const totalOfTableOfChangeDue = getTotalCountOfChange(cashEntry, priceEntry, changeInDrawer, baseOfDenominations, getTableOfChangeDue, getTotalOfTable);
+        const totalOfTableOfChangeDue = getTotalOfTableOfChangesDue(
+            priceEntry,
+            cashEntry,
+            baseOfDenominations,
+            changeInDrawer,
+            getTableOfChangesDues,
+            getTotalOfTable
+        );
 
-        // display.innerHTML = "";
-        // usedChange = [];
-
-        displayResult(totalOfChangeInDrawer, totalOfTableOfChangeDue, cashEntry, changeDue, display, priceEntry, statusMessages, isIndividualCountOfChangeSufficient, baseOfDenominations, changeInDrawer, getTableOfChangeDue, getTableOfDueCount, makeChangeOperation, changeUsed, getNewChangeInDrawer, getReminderFromChangeTable);
+        displayResult(
+            baseOfDenominations,
+            statusMessages,
+            changeInDrawer,
+            changeUsed,
+            changeDue,
+            priceEntry,
+            cashEntry,
+            totalOfChangeInDrawer,
+            totalOfTableOfChangeDue,
+            getReminderFromTableOfChangesDues,
+            getTableOfChangesDues,
+            getTableOfMaxDenominationCountDue,
+            isEachCountOfChangesEnough,
+            makeChangeOperation,
+            makeNewDrawer,
+            setDisplay
+        );
     }
 
-    return (<>
-        <div className="frame">
-            <h2>Welcome to my store</h2>
-        </div>
-
-        <div className="frame">
+    return (<div className="w-full h-auto mx-auto flex flex-col items-center justify-center">
+        <h2>Welcome to my store</h2>
+        <div className="w-full h-auto flex flex-col items-center justify-center">
+            <label htmlFor="price">Please enter price</label>
+            <Input inputType="text" entry={price} onEntry={ (entry) => {setPrice(entry.target.value)} } required={true} inputId="price"/>
             <label htmlFor="cash">Please enter cash</label>
-            <Input inputType="number" entry={cash} onEntry={ (entry) => {setCash(entry.target.value)} }/>
-            <label htmlFor="cash">Please enter price</label>
-            <Input inputType="number" entry={price} onEntry={ (entry) => {setPrice(entry.target.value)} }/>
-            <input id="cash" type="number" min="0"/>
-        </div>
-
-        <div className="frame">
+            <Input inputType="text" entry={cash} onEntry={ (entry) => {setCash(entry.target.value)} } required={true} inputId="cash"/>
             <Button buttonType="button"
                 buttonText="Purchase"
                 className="w-fit h-fit
@@ -93,11 +134,9 @@ export default function App()
                 "
                 onClick={ handlePurchase }
             />
-            <button id="purchase-btn">Purchase</button>
         </div>
-
         <div className="frame" id="change-due">
-            { display }
+            { handleDisplay(display) }
         </div>
-    </>)
+    </div>);
 }
