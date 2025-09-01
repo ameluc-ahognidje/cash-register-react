@@ -4,7 +4,7 @@
 //     return table.reduce((previousValue: number, currentValue:Denomination) => previousValue + currentValue[1], 0);
 // }
 
-import type { Dispatch, JSX } from "react";
+import type { Dispatch } from "react";
 import type {
     Base,
     Denomination,
@@ -49,13 +49,12 @@ export function displayResult(
         if (P_totalOfTableOfChangesDues && P_totalOfChangesInDrawer > P_changeDue)
         {
             if (P_isEachCountOfChangesEnough(
-                    P_changeDue,
-                    P_baseOfDenominations,
-                    P_changeInDrawer,
-                    P_getTableOfChangesDues,
-                    P_getTableOfMaxDenominationCountDue
-                )
-            )
+                P_changeDue,
+                P_baseOfDenominations,
+                P_changeInDrawer,
+                P_getTableOfChangesDues,
+                P_getTableOfMaxDenominationCountDue
+            ))
             {
                 P_makeChangeOperation(
                     P_changeUsed,
@@ -122,7 +121,8 @@ export function getReminderFromTableOfChangesDues(
 {
     const tableOfChangesDues = P_getTableOfChangesDues(P_changeDue, P_baseOfDenominations, P_changeInDrawer);
     const maxTableDue = P_getTableOfMaxDenominationCountDue(P_changeDue, P_baseOfDenominations, tableOfChangesDues);
-    const maxAmountDue = Number((P_baseOfDenominations[maxTableDue[0]] * maxTableDue[1]).toFixed(2))
+    const maxAmountDue = Number((P_baseOfDenominations[maxTableDue[0]] * maxTableDue[1]).toFixed(2));
+
     P_changeUsed.push([maxTableDue[0], maxAmountDue]);
     P_makeNewDrawer(maxAmountDue, maxTableDue, P_changeInDrawer);
 
@@ -141,7 +141,7 @@ export function getTableOfChangesDues(
     {
         if (amount > 0 && P_baseOfDenominations[denomination] <= P_changeDue)
         {
-            tableOfChangeDue.push([denomination, amount])
+            tableOfChangeDue.push([denomination, amount]);
         }
     }
 
@@ -166,7 +166,7 @@ export function getTableOfMaxDenominationCountDue(
     }
     else
     {
-        maxCountDue = amountOfDenominationDue2
+        maxCountDue = amountOfDenominationDue2;
     }
 
     return [ maxDenominationDue, maxCountDue ];
@@ -177,7 +177,7 @@ export function getTotalOfTable(P_tableOfChanges:Denomination[]): number
     let totalOfTable:number = 0;
 
     P_tableOfChanges.forEach((element:Denomination) => {
-        totalOfTable += element[1]
+        totalOfTable += element[1];
     });
 
     return totalOfTable;
@@ -251,7 +251,7 @@ export function makeChangeOperation(
             P_getTableOfChangesDues,
             P_getTableOfMaxDenominationCountDue,
             P_makeNewDrawer
-        )
+        );
     }
 }
 
@@ -261,7 +261,7 @@ export function makeNewDrawer(
     P_changeInDrawer:Denomination[]
 ): Denomination[]
 {
-    return P_changeInDrawer = P_changeInDrawer.map((row:Denomination) =>
+    return P_changeInDrawer.map((row:Denomination) =>
         {
             if (row[0] === P_tableOfMaxDenominationCountDue[0])
             {
@@ -271,5 +271,6 @@ export function makeNewDrawer(
             {
                 return row;
             }
-        });
+        }
+    );
 }
