@@ -1,9 +1,3 @@
-
-// export function getTotalOfTableSlim(table:Denomination[]) :number
-// {
-//     return table.reduce((previousValue: number, currentValue:Denomination) => previousValue + currentValue[1], 0);
-// }
-
 import type { Dispatch } from "react";
 import type {
     Base,
@@ -17,23 +11,24 @@ import type {
     MakeNewDrawer
 } from "./types.ts";
 
+
 export function displayResult(
-    P_baseOfDenominations:Base,
-    P_statusMessages:string[],
-    P_changeInDrawer:Denomination[],
-    P_changeUsed:Denomination[],
-    P_changeDue:number,
-    P_price:number,
-    P_cash:number,
-    P_totalOfChangesInDrawer:number,
-    P_totalOfTableOfChangesDues:number,
+    P_baseOfDenominations: Base,
+    P_statusMessages: string[],
+    P_changeInDrawer: Denomination[],
+    P_changeUsed: Denomination[],
+    P_changeDue: number,
+    P_price: number,
+    P_cash: number,
+    P_totalOfChangesInDrawer: number,
+    P_totalOfTableOfChangesDues: number,
     P_getReminderFromTableOfChangesDues: GetReminderFromTableOfChangesDues,
-    P_getTableOfChangesDues:GetTableOfChangesDues,
-    P_getTableOfMaxDenominationCountDue:GetTableOfMaxDenominationCountDue,
-    P_isEachCountOfChangesEnough:IsEachCountOfChangesEnough,
-    P_makeChangeOperation:MakeChangeOperation,
-    P_makeNewDrawer:MakeNewDrawer,
-    P_setDisplay:Dispatch<React.SetStateAction<string>>
+    P_getTableOfChangesDues: GetTableOfChangesDues,
+    P_getTableOfMaxDenominationCountDue: GetTableOfMaxDenominationCountDue,
+    P_isEachCountOfChangesEnough: IsEachCountOfChangesEnough,
+    P_makeChangeOperation: MakeChangeOperation,
+    P_makeNewDrawer: MakeNewDrawer,
+    P_setDisplay: Dispatch<React.SetStateAction<string>>
 ): void
 {
     if (P_cash < P_price)
@@ -71,7 +66,7 @@ export function displayResult(
 
                 for (let row of P_changeUsed)
                 {
-                    displayChange += row[0] + ":$" + row[1] + "<br/>";
+                    displayChange += row[0] + ": $" + row[1] + "<br/>";
                 }
 
                 P_setDisplay(`${P_statusMessages[3]}<br/>${displayChange}`);
@@ -98,7 +93,7 @@ export function displayResult(
 
             for (let row of P_changeUsed)
             {
-                displayChange += row[0] + ":$" + row[1] + "<br/>";
+                displayChange += row[0] + ": $" + row[1] + "<br/>";
             }
 
             P_setDisplay(`${P_statusMessages[2]}<br/>${displayChange}`);
@@ -111,12 +106,12 @@ export function displayResult(
 }
 
 export function getReminderFromTableOfChangesDues(
-    P_changeUsed:Denomination[],
-    P_changeDue:number, P_baseOfDenominations:Base,
-    P_changeInDrawer:Denomination[],
-    P_getTableOfChangesDues:GetTableOfChangesDues,
-    P_getTableOfMaxDenominationCountDue:GetTableOfMaxDenominationCountDue,
-    P_makeNewDrawer:MakeNewDrawer
+    P_changeUsed: Denomination[],
+    P_changeDue: number, P_baseOfDenominations: Base,
+    P_changeInDrawer: Denomination[],
+    P_getTableOfChangesDues: GetTableOfChangesDues,
+    P_getTableOfMaxDenominationCountDue: GetTableOfMaxDenominationCountDue,
+    P_makeNewDrawer: MakeNewDrawer
 ): number
 {
     const tableOfChangesDues = P_getTableOfChangesDues(P_changeDue, P_baseOfDenominations, P_changeInDrawer);
@@ -130,12 +125,12 @@ export function getReminderFromTableOfChangesDues(
 }
 
 export function getTableOfChangesDues(
-    P_changeDue:number,
-    P_baseOfDenominations:Base,
-    P_changeInDrawer:Denomination[]
+    P_changeDue: number,
+    P_baseOfDenominations: Base,
+    P_changeInDrawer: Denomination[]
 ): Denomination[]
 {
-    const tableOfChangeDue:Denomination[] = [];
+    const tableOfChangeDue: Denomination[] = [];
 
     for (let [denomination, amount] of P_changeInDrawer)
     {
@@ -149,16 +144,16 @@ export function getTableOfChangesDues(
 }
 
 export function getTableOfMaxDenominationCountDue(
-    P_changeDue:number,
-    baseOfDenominations:Base,
-    P_tableOfChangeDue:Denomination[]
+    P_changeDue: number,
+    baseOfDenominations: Base,
+    P_tableOfChangeDue: Denomination[]
 ): Denomination
 {
-    let maxDenominationDue:string = P_tableOfChangeDue[P_tableOfChangeDue.length - 1][0];
-    let maxCountDue:number;
+    let maxDenominationDue: string = P_tableOfChangeDue[P_tableOfChangeDue.length - 1][0];
+    let maxCountDue: number;
 
-    const amountOfDenominationDue1:number = Math.floor(P_changeDue / baseOfDenominations[maxDenominationDue]);
-    const amountOfDenominationDue2:number = Math.floor(P_tableOfChangeDue[P_tableOfChangeDue.length - 1][1] / baseOfDenominations[maxDenominationDue]);
+    const amountOfDenominationDue1: number = Math.floor(P_changeDue / baseOfDenominations[maxDenominationDue]);
+    const amountOfDenominationDue2: number = Math.floor(P_tableOfChangeDue[P_tableOfChangeDue.length - 1][1] / baseOfDenominations[maxDenominationDue]);
 
     if (amountOfDenominationDue1 <= amountOfDenominationDue2)
     {
@@ -172,11 +167,11 @@ export function getTableOfMaxDenominationCountDue(
     return [ maxDenominationDue, maxCountDue ];
 }
 
-export function getTotalOfTable(P_tableOfChanges:Denomination[]): number
+export function getTotalOfTable(P_tableOfChanges: Denomination[]): number
 {
-    let totalOfTable:number = 0;
+    let totalOfTable: number = 0;
 
-    P_tableOfChanges.forEach((element:Denomination) => {
+    P_tableOfChanges.forEach((element: Denomination)=> {
         totalOfTable += element[1];
     });
 
@@ -184,27 +179,27 @@ export function getTotalOfTable(P_tableOfChanges:Denomination[]): number
 }
 
 export function getTotalOfTableOfChangesDue(
-    P_price:number,
-    P_cash:number,
-    P_baseOfDenominations:Base,
-    P_changeInDrawer:Denomination[],
-    P_getTableOfChangesDues:GetTableOfChangesDues,
-    P_getTotalOfTable:GetTotalOfTable
+    P_price: number,
+    P_cash: number,
+    P_baseOfDenominations: Base,
+    P_changeInDrawer: Denomination[],
+    P_getTableOfChangesDues: GetTableOfChangesDues,
+    P_getTotalOfTable: GetTotalOfTable
 ): number
 {
     const changeDue = Number((P_cash - P_price).toFixed(2));
-    const tableOfChangesDues:Denomination[] = P_getTableOfChangesDues(changeDue, P_baseOfDenominations, P_changeInDrawer);
-    const totalOfTableOfChangesDue:number = P_getTotalOfTable(tableOfChangesDues);
+    const tableOfChangesDues: Denomination[] = P_getTableOfChangesDues(changeDue, P_baseOfDenominations, P_changeInDrawer);
+    const totalOfTableOfChangesDue: number = P_getTotalOfTable(tableOfChangesDues);
 
     return totalOfTableOfChangesDue;
 }
 
 export function isEachCountOfChangesEnough(
-    P_changeDue:number,
-    P_baseOfDenominations:Base,
-    P_changeInDrawer:Denomination[],
-    P_getTableOfChangesDues:GetTableOfChangesDues,
-    P_getTableOfMaxDenominationCountDue:GetTableOfMaxDenominationCountDue
+    P_changeDue: number,
+    P_baseOfDenominations: Base,
+    P_changeInDrawer: Denomination[],
+    P_getTableOfChangesDues: GetTableOfChangesDues,
+    P_getTableOfMaxDenominationCountDue: GetTableOfMaxDenominationCountDue
 ): boolean
 {
     let tableOfChangesDues = P_getTableOfChangesDues(P_changeDue, P_baseOfDenominations, P_changeInDrawer);
@@ -221,17 +216,17 @@ export function isEachCountOfChangesEnough(
 }
 
 export function makeChangeOperation(
-    P_changeUsed:Denomination[],
-    P_changeDue:number,
-    P_baseOfDenominations:Base,
-    P_changeInDrawer:Denomination[],
-    P_getReminderFromTableOfChangesDues:GetReminderFromTableOfChangesDues,
-    P_getTableOfChangesDues:GetTableOfChangesDues,
-    P_getTableOfMaxDenominationCountDue:GetTableOfMaxDenominationCountDue,
-    P_makeNewDrawer:MakeNewDrawer
+    P_changeUsed: Denomination[],
+    P_changeDue: number,
+    P_baseOfDenominations: Base,
+    P_changeInDrawer: Denomination[],
+    P_getReminderFromTableOfChangesDues: GetReminderFromTableOfChangesDues,
+    P_getTableOfChangesDues: GetTableOfChangesDues,
+    P_getTableOfMaxDenominationCountDue: GetTableOfMaxDenominationCountDue,
+    P_makeNewDrawer: MakeNewDrawer
 ): void
 {
-    let reminder:number = P_getReminderFromTableOfChangesDues(
+    let reminder: number = P_getReminderFromTableOfChangesDues(
         P_changeUsed,
         P_changeDue,
         P_baseOfDenominations,
@@ -256,12 +251,12 @@ export function makeChangeOperation(
 }
 
 export function makeNewDrawer(
-    P_maxAmountDue:number,
-    P_tableOfMaxDenominationCountDue:Denomination,
-    P_changeInDrawer:Denomination[]
+    P_maxAmountDue: number,
+    P_tableOfMaxDenominationCountDue: Denomination,
+    P_changeInDrawer: Denomination[]
 ): Denomination[]
 {
-    return P_changeInDrawer.map((row:Denomination) =>
+    return P_changeInDrawer.map((row: Denomination)=>
         {
             if (row[0] === P_tableOfMaxDenominationCountDue[0])
             {
@@ -274,3 +269,8 @@ export function makeNewDrawer(
         }
     );
 }
+
+// export function getTotalOfTableSlim(table: Denomination[]) : number
+// {
+//     return table.reduce((previousValue: number, currentValue: Denomination)=> previousValue + currentValue[1], 0);
+// }
