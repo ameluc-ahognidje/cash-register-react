@@ -4,8 +4,6 @@ import type {  Base, Denomination } from "../utilities/types.ts";
 import Button from "./components/Button.tsx";
 import Input from "./components/Input.tsx";
 
-
-let changeUsed: Denomination[] = [];
 let changeInDrawer: Denomination[] = [
     ["PENNY", 1.01],
     ["NICKEL", 2.05],
@@ -38,24 +36,32 @@ const statusMessages: string[] = [
 export default function App(): JSX.Element
 {
     const [cash, setCash] = useState<string>("");
-    const [display, setDisplay] = useState<string>("");
+    const [displaySatusMessage, setDisplaySatusMessage] = useState<string>("");
+    const [displayOperationInfos, setDisplayOperationInfos] = useState<{id: string, infos: Denomination}[] | null>(null);
     const [price, setPrice] = useState<string>("");
 
-    function handleDisplay(text: string): JSX.Element | string
+    function handleDisplay(): void
     {
-        if (/<br\/>/.test(text))
-        {
-            const table: string[] = text.split(/<br\/>/);
+        const result: string | [string, Denomination[]] | void = handlePurchase();
 
-            return (<>{table.map((element)=>(<p>{element}</p>))}</>);
-        }
-        else
+        if (result)
         {
-            return text;
+            if (typeof result === "string")
+            {
+                setDisplaySatusMessage(result);
+            }
+            else
+            {
+                const [statusMsg, changeOpInfo] = result;
+                const changeInfo: {id: string, infos: Denomination}[] = changeOpInfo.map((row)=>({id: crypto.randomUUID(), infos: row}));
+
+                setDisplaySatusMessage(statusMsg);
+                setDisplayOperationInfos(changeInfo);
+            }
         }
     }
 
-    function handlePurchase(): void
+    function handlePurchase(): string | [string, Denomination[]] | void
     {
         const cashEntry: number = Number(cash);
         const priceEntry: number = Number(price);
@@ -63,7 +69,7 @@ export default function App(): JSX.Element
         const totalOfChangeInDrawer: number = Number(getTotalOfTable(changeInDrawer).toFixed(2));
         const totalOfTableOfChangeDue: number = getTotalOfTableOfChangesDue(priceEntry, cashEntry, baseOfDenominations, changeInDrawer, getTableOfChangesDues, getTotalOfTable);
 
-        displayResult(baseOfDenominations, statusMessages, changeInDrawer, changeUsed, changeDue, priceEntry, cashEntry, totalOfChangeInDrawer, totalOfTableOfChangeDue, getReminderFromTableOfChangesDues, getTableOfChangesDues, getTableOfMaxDenominationCountDue, isEachCountOfChangesEnough, makeChangeOperation, makeNewDrawer, setDisplay);
+        return displayResult(baseOfDenominations, statusMessages, changeInDrawer, changeDue, priceEntry, cashEntry, totalOfChangeInDrawer, totalOfTableOfChangeDue, getReminderFromTableOfChangesDues, getTableOfChangesDues, getTableOfMaxDenominationCountDue, isEachCountOfChangesEnough, makeChangeOperation, makeNewDrawer);
     }
 
     return (<div className="w-full h-auto mx-auto flex flex-col items-center justify-center">
@@ -73,10 +79,11 @@ export default function App(): JSX.Element
             <Input inputType="text" entry={price} onEntry={(entry)=>{setPrice(entry.target.value)}} required={true} inputId="price" />
             <label htmlFor="cash">Please enter cash</label>
             <Input inputType="text" entry={cash} onEntry={(entry)=>{setCash(entry.target.value)}} required={true} inputId="cash" />
-            <Button buttonType="button" buttonText="Purchase" className="w-fit h-fit rounded-lg p-1 bg-sky-200 active: scale-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 md:p-1 md:text-1xl lg:cursor-pointer transition lg:delay-100 lg:duration-200 lg:ease-in-out lg:hover:bg-gray-300 lg:dark:hover:bg-gray-500" onClick={handlePurchase} />
+            <Button buttonType="button" buttonText="Purchase" className="w-fit h-fit rounded-lg p-1 bg-sky-200 active: scale-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 md:p-1 md:text-1xl lg:cursor-pointer transition lg:delay-100 lg:duration-200 lg:ease-in-out lg:hover:bg-gray-300 lg:dark:hover:bg-gray-500" onClick={handleDisplay} />
         </div>
         <div className="frame" id="change-due">
-            {handleDisplay(display)}
+            {displaySatusMessage && <p>{displaySatusMessage}</p>}
+            {displayOperationInfos && displayOperationInfos.map((row)=>(<p key={row.id}>{`${row.infos[0]}: $${row.infos[1]}`}</p>))}
         </div>
     </div>);
 }
