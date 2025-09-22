@@ -1,21 +1,11 @@
-import type {
-    Base,
-    Denomination,
-    GetReminderFromTableOfChangesDues,
-    GetTableOfChangesDues,
-    GetTableOfMaxDenominationCountDue,
-    GetTotalOfTable,
-    IsEachCountOfChangesEnough,
-    MakeChangeOperation,
-    MakeNewDrawer
-} from "./types.ts";
+import type { Base, Denomination, GetReminderFromTableOfChangesDues, GetTableOfChangesDues, GetTableOfMaxDenominationCountDue, GetTotalOfTable, IsEachCountOfChangesEnough, MakeChangeOperation, MakeNewDrawer } from "./types.ts";
 
 
-export function displayResult(P_baseOfDenominations: Base, P_statusMessages: string[], P_changeInDrawer: Denomination[], P_changeDue: number, P_price: number, P_cash: number, P_totalOfChangesInDrawer: number, P_totalOfTableOfChangesDues: number, P_getReminderFromTableOfChangesDues: GetReminderFromTableOfChangesDues, P_getTableOfChangesDues: GetTableOfChangesDues, P_getTableOfMaxDenominationCountDue: GetTableOfMaxDenominationCountDue, P_isEachCountOfChangesEnough: IsEachCountOfChangesEnough, P_makeChangeOperation: MakeChangeOperation, P_makeNewDrawer: MakeNewDrawer): string | [string, Denomination[]] | void
+export function getOperationInformations(P_baseOfDenominations: Base, P_statusMessages: string[], P_changeInDrawer: Denomination[], P_changeDue: number, P_price: number, P_cash: number, P_totalOfChangesInDrawer: number, P_totalOfTableOfChangesDues: number, P_getReminderFromTableOfChangesDues: GetReminderFromTableOfChangesDues, P_getTableOfChangesDues: GetTableOfChangesDues, P_getTableOfMaxDenominationCountDue: GetTableOfMaxDenominationCountDue, P_isEachCountOfChangesEnough: IsEachCountOfChangesEnough, P_makeChangeOperation: MakeChangeOperation, P_makeNewDrawer: MakeNewDrawer): string | [string, Denomination[]] | void
 {
     if (P_cash < P_price)
     {
-        alert("Customer does not have enough money to purchase the item");
+        return "Customer does not have enough money to purchase the item";
     }
     else if (P_cash === P_price)
     {
@@ -38,7 +28,7 @@ export function displayResult(P_baseOfDenominations: Base, P_statusMessages: str
                 return P_statusMessages[1];
             }
         }
-        else if (P_totalOfTableOfChangesDues && P_totalOfChangesInDrawer == P_changeDue)
+        else if (P_totalOfTableOfChangesDues && P_totalOfChangesInDrawer === P_changeDue)
         {
             const changeUsed: Denomination[] = [];
 
@@ -97,7 +87,7 @@ export function getTableOfMaxDenominationCountDue(P_changeDue: number, baseOfDen
         maxCountDue = amountOfDenominationDue2;
     }
 
-    return [ maxDenominationDue, maxCountDue ];
+    return [maxDenominationDue, maxCountDue];
 }
 
 export function getTotalOfTable(P_tableOfChanges: Denomination[]): number
