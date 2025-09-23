@@ -1,20 +1,20 @@
 import { useState, type JSX } from "react";
 import { getOperationInformations, getReminderFromTableOfChangesDues, getTableOfChangesDues, getTableOfMaxDenominationCountDue, getTotalOfTable, getTotalOfTableOfChangesDue, isEachCountOfChangesEnough, makeChangeOperation, makeNewDrawer } from "../utilities/functions.ts";
-import type {  Base, Denomination } from "../utilities/types.ts";
+import type { Base, Denomination } from "../utilities/types.ts";
 import Button from "./components/Button.tsx";
 import Input from "./components/Input.tsx";
 
 
 let changeInDrawer: Denomination[] = [
-    ["PENNY", 1.01],
-    ["NICKEL", 2.05],
-    ["DIME", 3.1],
-    ["QUARTER", 4.25],
-    ["ONE", 90],
-    ["FIVE", 55],
-    ["TEN", 20],
-    ["TWENTY", 60],
-    ["ONE HUNDRED", 100]
+    [ "PENNY", 1.01 ],
+    [ "NICKEL", 2.05 ],
+    [ "DIME", 3.1 ],
+    [ "QUARTER", 4.25 ],
+    [ "ONE", 90 ],
+    [ "FIVE", 55 ],
+    [ "TEN", 20 ],
+    [ "TWENTY", 60 ],
+    [ "ONE HUNDRED", 100 ]
 ];
 const baseOfDenominations: Base = {
     "PENNY": 0.01,
@@ -36,12 +36,12 @@ const statusMessages: string[] = [
 
 export default function App(): JSX.Element
 {
-    const [cash, setCash] = useState<string>("");
-    const [displaySatusMessage, setDisplaySatusMessage] = useState<string>("");
-    const [displayOperationInfos, setDisplayOperationInfos] = useState<{id: string, infos: Denomination}[] | null>(null);
-    const [price, setPrice] = useState<string>("");
-    const [isString, setIsString] = useState<boolean>(false);
-    const [isZero, setIsZero] = useState<boolean>(false);
+    const [ cash, setCash ] = useState<string>("");
+    const [ displaySatusMessage, setDisplaySatusMessage ] = useState<string>("");
+    const [ displayOperationInfos, setDisplayOperationInfos ] = useState<{ id: string, infos: Denomination }[] | null>(null);
+    const [ price, setPrice ] = useState<string>("");
+    const [ isString, setIsString ] = useState<boolean>(false);
+    const [ isZero, setIsZero ] = useState<boolean>(false);
 
     function handleDisplay(): void
     {
@@ -143,7 +143,7 @@ export default function App(): JSX.Element
                         items-center
                         justify-center">
                         <p>{displaySatusMessage}</p>
-                        {displayOperationInfos && displayOperationInfos.map((row)=>(<p key={row.id}>{`${row.infos[0]}: $${row.infos[1]}`}</p>))}
+                        {displayOperationInfos && displayOperationInfos.map((row)=>(<p key={ row.id}>{`${row.infos[0]}: $${row.infos[1]}`}</p>))}
                     </div>
                 </div>);
             }
@@ -183,20 +183,22 @@ export default function App(): JSX.Element
                     focus-visible:ring-2
                     focus-visible:ring-blue-400"
                 inputType="text"
-                entry={price}
-                onEntry={(entry)=>{
+                entry={ price }
+                onEntry={(entry) => {
                     setPrice(entry.target.value);
-                    if (price.length === 0)
+                    if (entry.target.value.length === 0)
                     {
-                        setDisplaySatusMessage("")
+                        setDisplaySatusMessage("");
+                        setIsString(false);
+                        setIsZero(false);
                     }
                     else
                     {
-                        isNaN(Number(price)) ? setIsString(true) : setIsString(false);
-                        Number(price) === 0 ? setIsZero(true) : setIsZero(false);
+                        isNaN(Number(entry.target.value)) ? setIsString(true) : setIsString(false);
+                        Number(entry.target.value) === 0 ? setIsZero(true) : setIsZero(false);
                     }
                 }}
-                required={true}
+                required={ true }
                 inputId="price"
                 placeholder="Type here..."
             />
@@ -218,20 +220,22 @@ export default function App(): JSX.Element
                     focus-visible:ring-2
                     focus-visible:ring-blue-400"
                 inputType="text"
-                entry={cash}
-                onEntry={(entry)=>{
+                entry={ cash}
+                onEntry={(entry) => {
                     setCash(entry.target.value);
-                    if (cash.length === 0)
+                    if (entry.target.value.length === 0)
                     {
-                        setDisplaySatusMessage("")
+                        setDisplaySatusMessage("");
+                        setIsString(false);
+                        setIsZero(false);
                     }
                     else
                     {
-                        isNaN(Number(cash)) ? setIsString(true) : setIsString(false);
-                        Number(cash) === 0 ? setIsZero(true) : setIsZero(false);
+                        isNaN(Number(entry.target.value)) ? setIsString(true) : setIsString(false);
+                        Number(entry.target.value) === 0 ? setIsZero(true) : setIsZero(false);
                     }
                 }}
-                required={true}
+                required={ true }
                 inputId="cash"
                 placeholder="Type here..."
             />
@@ -268,13 +272,14 @@ export default function App(): JSX.Element
                     lg:active:border-white/0
                     dark:lg:active:border-white/0
                     disabled:active:scale-none
+                    disabled:lg:hover:text-red-500
                     disabled:lg:hover:border-red-500
                     disabled:active:shadow-[12px_12px_16px_#d3d5d6,-12px_-12px_16px_#ffffff]
                     disabled:dark:active:shadow-[12px_12px_16px_#3c1501,-12px_-12px_16px_#511d01]"
-                onClick={handleDisplay}
-                buttonActive={price.length === 0 || cash.length === 0 ? true : false}
+                onClick={ handleDisplay }
+                buttonActive={ price.length === 0 || cash.length === 0 ? true : false }
             />
         </div>
-        {handleInput()}
+        { handleInput() }
     </>);
 }
