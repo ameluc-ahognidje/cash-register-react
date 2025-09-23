@@ -7,7 +7,7 @@ interface InputProps
     inputId?: string,
     inputType?: string,
     placeholder?: string,
-    entry: string,
+    entry: string | number,
     required?: boolean,
     onEntry: (event: ChangeEvent<HTMLInputElement>) => void,
     ref?: Ref<HTMLInputElement>,
